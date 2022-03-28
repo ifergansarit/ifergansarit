@@ -14,7 +14,19 @@ namespace ConsoleApp1
         public DateTime EndTime { get; set; }
         public List < Plane > Planes { get; set; }
 
-        
+        public IntelligenceGathering(DrawerOperation d, string name, DateTime startTime, DateTime endtTime)
+        {
+            operationNumber++;
+            Code = operationNumber;
+            Name = name;
+            Description = d.Description;
+            PlanesNumber = d.PlanesNumber;
+            CameraType = d.CameraType;
+            Route = d.Route;
+            StartTime = startTime;
+            EndTime = endtTime;
+            Planes = new List<Plane>();
+        }
         public IntelligenceGathering(string name, string description, int planesNumber, string cameraType,
             List<string> route, DateTime startTime, DateTime endtTime)
         {
