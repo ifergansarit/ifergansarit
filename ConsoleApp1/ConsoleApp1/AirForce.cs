@@ -54,23 +54,7 @@ namespace ConsoleApp1
                                 }
                             }
                         }
-                    }
-                    //if (op is UsedDrawerOperation)
-                    //{
-                    //    for (int i = 0; i < (op as UsedDrawerOperation).Planes.Count(); i++)
-                    //    {
-                    //        if ((op as UsedDrawerOperation).Planes[i] != null)
-                    //        {
-                    //            if ((op as UsedDrawerOperation).EndTime.AddHours(1) <= now)
-                    //            {
-                    //                (op as UsedDrawerOperation).Planes[i].IsInUse = false;
-                    //                (op as UsedDrawerOperation).Planes[i].OperationName = null;
-                    //                Operations.Remove(op);
-                    //                i--;
-                    //            }
-                    //        }
-                    //    }
-                    //}
+                    }                    
                 }
             }
         }
@@ -86,10 +70,6 @@ namespace ConsoleApp1
                 {
                     planesNumber = (op as IntelligenceGathering).PlanesNumber;
                 }
-                //if (op is UsedDrawerOperation)
-                //{
-                //    planesNumber = (op as UsedDrawerOperation).PlanesNumber;
-                //}
                 if (op is AssaultOperation)
                 {
                     planesNumber = (op as AssaultOperation).PlanesNumber;
@@ -110,16 +90,6 @@ namespace ConsoleApp1
                                 Planes[i].OperationName = (op as IntelligenceGathering).Name;
                             }
                         }
-                        //if (op is UsedDrawerOperation)
-                        //{
-                        //    if (Planes[i].IsInUse == false)
-                        //    {
-                        //        (op as UsedDrawerOperation).Planes.Add(Planes[i]);
-                        //        planesNumber--;
-                        //        Planes[i].IsInUse = true;
-                        //        Planes[i].OperationName = (op as UsedDrawerOperation).Name;
-                        //    }
-                        //}
                         if (op is AssaultOperation)
                         {
                             if (Planes[i].IsInUse == false)
@@ -193,52 +163,43 @@ namespace ConsoleApp1
                 {
                     if (op.Name == name)
                     {
-                        if (op is IntelligenceGathering)
-                        {
-
-                            foreach (Plane p in (op as IntelligenceGathering).Planes)
-                            {
-                                if (p != null) { 
-                                p.IsInUse = false;
-                                p.OperationName = null;
-                                (op as IntelligenceGathering).Planes.Remove(p);
-                                }
-                            }
-                            (op as IntelligenceGathering).StartTime = startTime;
-                            (op as IntelligenceGathering).EndTime = endTime;
-                        }
-                        //if (op is UsedDrawerOperation)
-                        //{
-                        //    foreach (Plane p in (op as UsedDrawerOperation).Planes)
-                        //    {
-                        //        if (p != null)
-                        //        {
-                        //            p.IsInUse = false;
-                        //            p.OperationName = null;
-                        //            (op as UsedDrawerOperation).Planes.Remove(p);
-                        //        }
-                        //    }
-                        //    (op as UsedDrawerOperation).StartTime = startTime;
-                        //    (op as UsedDrawerOperation).EndTime = endTime;
-                        //}
-                        if (op is AssaultOperation)
-                        {
-                            foreach (Plane p in (op as AssaultOperation).Planes)
+                        IntelligenceGathering i=op as IntelligenceGathering;
+                        if(i!=null){
+                            foreach (Plane p in (i as IntelligenceGathering).Planes)
                             {
                                 if (p != null)
                                 {
                                     p.IsInUse = false;
-                                    p.OperationName = null;
-                                    (op as AssaultOperation).Planes.Remove(p);
+                                    p.OperationName = null;                                   
                                 }
                             }
-                            (op as AssaultOperation).StartTime = startTime;
-                            (op as AssaultOperation).EndTime = endTime;
-                        }
+                            (i as IntelligenceGathering).Planes.Clear();
+                            (i as IntelligenceGathering).StartTime = startTime;
+                            (i as IntelligenceGathering).EndTime = endTime;
+                            OtomaticMatchingPlanes(i);
+                            i.isOperationReady();
+                            i.Print();
+                        }                        
                     }
-
-                    OtomaticMatchingPlanes(op);
-                    op.isOperationReady();
+                    AssaultOperation a = op as AssaultOperation;
+                    if (a != null)
+                    {
+                        foreach (Plane p in (a as AssaultOperation).Planes)
+                        {
+                            if (p != null)
+                            {
+                                p.IsInUse = false;
+                                p.OperationName = null;
+                            }
+                        }
+                        (a as AssaultOperation).Planes.Clear();
+                        (a as AssaultOperation).StartTime = startTime;
+                        (a as AssaultOperation).EndTime = endTime;
+                        OtomaticMatchingPlanes(a);
+                        a.isOperationReady();
+                        a.Print();
+                    }
+                   
                 }
             }
         }

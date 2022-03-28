@@ -10,29 +10,43 @@ namespace ConsoleApp1
     class Program
     {
 
-        public static List<IntelligenceGathering> CreatingOperation(AirForce myAirForce,  int code,string name,DateTime startTime,DateTime endTime)
+        public static List<IntelligenceGathering> CreatingOperation(AirForce myAirForce, int code, string name, DateTime startTime, DateTime endTime)
         {
-            List<IntelligenceGathering> opList=new List<IntelligenceGathering>();
+            List<IntelligenceGathering> opList = new List<IntelligenceGathering>();
 
             IntelligenceGathering op;
-            for (int i = 0; i < myAirForce.DrawerOperations.Count(); i++)
+            try
             {
-                if (myAirForce.DrawerOperations[i] != null)
+                if (myAirForce.DrawerOperations != null)
                 {
-                    if (myAirForce.DrawerOperations[i].Code == code)
+                    for (int i = 0; i < myAirForce.DrawerOperations.Count(); i++)
                     {
-                        op = new IntelligenceGathering(name, myAirForce.DrawerOperations[i].Description,
-                         myAirForce.DrawerOperations[i].PlanesNumber, myAirForce.DrawerOperations[i].CameraType, myAirForce.DrawerOperations[i].Route, startTime, endTime);
-                        i = myAirForce.DrawerOperations.Count();
-                        opList.Add(op);
+                        if (myAirForce.DrawerOperations[i] != null)
+                        {
+                            if (myAirForce.DrawerOperations[i].Code == code)
+                            {
+                                op = new IntelligenceGathering(name, myAirForce.DrawerOperations[i].Description,
+                                 myAirForce.DrawerOperations[i].PlanesNumber, myAirForce.DrawerOperations[i].CameraType, myAirForce.DrawerOperations[i].Route, startTime, endTime);
+                                //i = myAirForce.DrawerOperations.Count();
+                                opList.Add(op);
+                            }
+                        }
                     }
+
                 }
+                else
+                    Console.WriteLine("There are no Drawer Operations");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             return opList;
         }
         static void Main(string[] args)
         {
-            try {
+            try
+            {
                 AirForce myAirForce = new AirForce();
                 bool finish = false;
 
@@ -62,6 +76,7 @@ namespace ConsoleApp1
                             string destination = Console.ReadLine();
                             route.Add(destination);
                             DrawerOperation drawerOperation = new DrawerOperation(name, description, planesNumber, cameraType, route);
+                            drawerOperation.Print();
                             myAirForce.AddOperation(drawerOperation);
                             break;
                         case "i":       //adding IntelligenceGathering
@@ -71,32 +86,17 @@ namespace ConsoleApp1
                             {
                                 case "y":
                                     Console.WriteLine("enter code of a drawer operation you want to use");
-                                    int code11 = Convert.ToInt32( Console.ReadLine());
+                                    int code11 = Convert.ToInt32(Console.ReadLine());
                                     Console.WriteLine("enter name for the new operation");
                                     string name11 = Console.ReadLine();
-                                    //Console.WriteLine("enter description");
-                                    //string description11 = Console.ReadLine();
-                                    //Console.WriteLine("enter num of planes");
-                                    //int planesNumber11 = Convert.ToInt32(Console.ReadLine());
-                                    //Console.WriteLine("enter camera type");
-                                    //string cameraType11 = Console.ReadLine();
-                                    //List<string> route11 = new List<string>();
-                                    //Console.WriteLine("enter origion");
-                                    //string origion11 = Console.ReadLine();
-                                    //route11.Add(origion11);
-                                    //Console.WriteLine("enter staitions");
-                                    //string staitions11 = Console.ReadLine();
-                                    //route11.Add(staitions11);
-                                    //Console.WriteLine("enter destination");
-                                    //string destination11 = Console.ReadLine();
-                                    //route11.Add(destination11);
                                     Console.WriteLine("enter startTime");
                                     DateTime startTime11 = Convert.ToDateTime(Console.ReadLine());
                                     Console.WriteLine("enter endTime");
                                     DateTime endTime11 = Convert.ToDateTime(Console.ReadLine());
-                                    List<IntelligenceGathering> opList=CreatingOperation(myAirForce,code11 ,name11, startTime11, endTime11);
+                                    List<IntelligenceGathering> opList = CreatingOperation(myAirForce, code11, name11, startTime11, endTime11);
                                     myAirForce.AddOperation(opList[0]);
                                     myAirForce.OtomaticMatchingPlanes(opList[0]);
+                                    opList[0].Print();
                                     break;
                                 case "n":
                                     Console.WriteLine("enter name");
@@ -122,9 +122,10 @@ namespace ConsoleApp1
                                     Console.WriteLine("enter endTime");
                                     DateTime endTime = Convert.ToDateTime(Console.ReadLine());
                                     IntelligenceGathering IntelligenceGatheringOperation2 = new IntelligenceGathering(name1, description1, planesNumber1,
-                                        cameraType1, route1, startTime, endTime);
+                                        cameraType1, route1, startTime, endTime);                                    
                                     myAirForce.AddOperation(IntelligenceGatheringOperation2);
                                     myAirForce.OtomaticMatchingPlanes(IntelligenceGatheringOperation2);
+                                    IntelligenceGatheringOperation2.Print();
                                     break;
                                 default:
                                     break;
@@ -147,6 +148,7 @@ namespace ConsoleApp1
                             DateTime endTime2 = Convert.ToDateTime(Console.ReadLine());
                             AssaultOperation assaultOperation = new AssaultOperation(name2, description2, planesNumber2
                                 , armamentType, landmark, startTime2, endTime2);
+                            assaultOperation.Print();
                             myAirForce.AddOperation(assaultOperation);
                             myAirForce.OtomaticMatchingPlanes(assaultOperation);
                             break;
@@ -158,7 +160,8 @@ namespace ConsoleApp1
                             List<Operation> specificOperations = myAirForce.OperationsWithinCertainTime(startTime3, endTime3);
                             foreach (Operation op in specificOperations)
                             {
-                                op.Print();
+                                if (op != null)
+                                    op.Print();                               
                             }
 
                             break;
@@ -173,20 +176,20 @@ namespace ConsoleApp1
                             break;
                         case "r":     //checking if one operation is ready
                             Console.WriteLine("enter a name of operation");
-                            string name5 = Console.ReadLine();                            
+                            string name5 = Console.ReadLine();
                             foreach (Operation op in myAirForce.Operations)
                             {
                                 if (op != null)
                                 {
-                                    Console.WriteLine( op.isOperationReady());
+                                    Console.WriteLine(op.isOperationReady());
                                 }
                             }
-                            
+
                             break;
                         case "nr":    //selecting all operations in x hours and which  aren't ready 
                             Console.WriteLine("enter num of hours");
                             int hours = Convert.ToInt32(Console.ReadLine());
-                            List<Operation>l= myAirForce.NotReadyOperations(hours);
+                            List<Operation> l = myAirForce.NotReadyOperations(hours);
                             foreach (Operation op in l)
                             {
                                 if (op != null)
@@ -203,12 +206,13 @@ namespace ConsoleApp1
                             break;
                     }
                 } while (finish != true);
-                Console.ReadLine();
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            }        
+            Console.ReadLine();
+        }
     }
 }

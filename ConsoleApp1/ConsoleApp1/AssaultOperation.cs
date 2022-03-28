@@ -40,6 +40,14 @@ namespace ConsoleApp1
             {
                 Console.WriteLine(prop.Name + ": " + prop.GetValue(this, null));
             }
+            Console.WriteLine("The list of planes: ");
+            foreach (Plane p in Planes)
+            {
+                if (p != null)
+                {
+                    Console.WriteLine(p.Name);
+                }
+            }
         }
     }
 }
